@@ -1,38 +1,129 @@
 <template>
-  <v-app>
-    <v-toolbar app>
-      <v-toolbar-title class="headline text-uppercase">
-        <span>Vuetify</span>
-        <span class="font-weight-light">MATERIAL DESIGN</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn
-        flat
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-      >
-        <span class="mr-2">Latest Release</span>
-      </v-btn>
-    </v-toolbar>
+    <v-app>
+        <v-content>
 
-    <v-content>
-      <HelloWorld/>
-    </v-content>
-  </v-app>
+            <v-container fluid grid-list-xs>
+                <v-layout column>
+
+                    <h1><v-icon v-text="$vuetify.icons.cancel" class="red--text"></v-icon></h1>
+                    <v-flex xs12>
+                        <v-responsive :aspect-ratio="20/6">
+                            <div class="resultContainer">
+                                <v-layout v-bind="layoutAttributes">
+                                    <div class="item elevation-5"></div>
+                                    <div class="item elevation-5"></div>
+                                    <div class="item elevation-5"></div>
+                                </v-layout>
+                            </div>
+                        </v-responsive>
+                    </v-flex>
+                    <v-flex xs12>
+                        <v-layout row xs12 wrap>
+                            <v-flex xs12 md4>
+                                <v-radio-group v-model="alignment">
+                                    <v-radio
+                                            v-for="n in alignmentsAvailable"
+                                            :key="n"
+                                            :label="n === '' ? 'Nothing' : n"
+                                            :value="n"
+                                    ></v-radio>
+                                </v-radio-group>
+                            </v-flex>
+                            <v-flex xs12 md4 class="red--text">
+                                <v-radio-group v-model="justify">
+                                    <v-radio
+                                            v-for="n in justifyAvailable"
+                                            :key="n"
+                                            :label="n === '' ? 'Nothing' : n"
+                                            :value="n"
+                                    ></v-radio>
+                                </v-radio-group>
+                            </v-flex>
+                            <v-flex xs12 md4>
+                                <v-layout column>
+                                    <v-radio-group v-model="flexDirection">
+                                        <v-checkbox
+                                                v-model="reverse"
+                                                label="reverse"
+                                                hide-details
+                                        ></v-checkbox>
+                                        <v-checkbox
+                                                v-model="fillHeight"
+                                                label="fill-height"
+                                                hide-details
+                                        ></v-checkbox>
+                                        <v-radio
+                                                v-for="n in flexDirectionAvailable"
+                                                :key="n"
+                                                :label="n === '' ? 'Nothing' : n"
+                                                :value="n"
+                                        ></v-radio>
+                                    </v-radio-group>
+                                </v-layout>
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex xs12>
+                        <h5>Output:</h5>
+                        <code>{{ formatAttributes(layoutAttributes) }}</code>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+
+        </v-content>
+    </v-app>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld'
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  },
-  data () {
-    return {
-      //
+<script>
+    export default {
+        name: "App",
+        data() {
+            return {
+                alignmentsAvailable: ['align-center', 'align-end', 'align-space-around', 'align-space-between', 'align-start', ''],
+                alignment: 'align-center',
+                alignmentsContentAvailable: ['align-content-center', 'align-content-end', 'align-content-space-around', 'align-content-space-between', 'align-content-start', ''],
+                justifyAvailable: ['justify-center', 'justify-end', 'justify-space-around', 'justify-space-between', 'justify-start', ''],
+                justify: 'justify-center',
+                reverse: false,
+                flexDirectionAvailable: ['row', 'column', ''],
+                flexDirection: 'row',
+                fillHeight: true
+            }
+        },
+        computed: {
+            layoutAttributes() {
+                return {
+                    [this.alignment]: true,
+                    [this.justify]: true,
+                    [this.flexDirection]: true,
+                    reverse: this.reverse,
+                    'fill-height': this.fillHeight
+                }
+            }
+        },
+        methods: {
+            formatAttributes(attributes) {
+                const attributeArray = []
+                for (const Key in attributes) {
+                    if (!attributes.hasOwnProperty(Key) || Key === '' || attributes[Key] === false) continue
+                    attributeArray.push(Key.trim())
+                }
+                return `<v-layout ${attributeArray.join(' ')}/>`
+            }
+        }
+
     }
-  }
-}
 </script>
+
+<style scoped>
+    .resultContainer {
+
+    }
+
+    .item {
+        min-height: 50px;
+        min-width: 80px;
+        margin: 10px;
+    }
+</style>
